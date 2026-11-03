@@ -1,0 +1,170 @@
+<%- include('../partials/header') %>
+
+<section class="hero">
+    <span class="eyebrow">WELCOME TO THE WORLD OF STORIES</span>
+
+    <h1>Discover Your Next <em>Adventure.</em></h1>
+
+    <p>
+        Explore a collection of magical stories, legendary adventures,
+        and extraordinary worlds.
+    </p>
+</section>
+
+<section class="collection-section">
+
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">THE ARCHIVE</span>
+            <h2>Book Collection</h2>
+        </div>
+
+        <a href="/books/add" class="button button-primary">
+            + Add New Book
+        </a>
+    </div>
+
+    <form action="/books" method="GET" class="filter-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search by title or author..."
+            value="<%= search %>"
+        >
+
+        <select name="genre">
+            <option value="">All Genres</option>
+
+            <% ['Fantasy', 'Adventure', 'Mystery', 'Fiction', 'Romance'].forEach(item => { %>
+                <option
+                    value="<%= item %>"
+                    <%= genre === item ? 'selected' : '' %>
+                >
+                    <%= item %>
+                </option>
+            <% }) %>
+        </select>
+
+        <button type="submit" class="button button-primary">
+            Search
+        </button>
+
+        <a href="/books" class="button button-outline">
+            Reset
+        </a>
+
+    </form>
+
+    <div class="result-info">
+        Showing <strong><%= books.length %></strong> books on this page
+    </div>
+
+    <div class="table-wrapper">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <% if (books.length === 0) { %>
+
+                    <tr>
+                        <td colspan="7" class="empty">
+                            No books found in the library.
+                        </td>
+                    </tr>
+
+                <% } %>
+
+                <% books.forEach((book, index) => { %>
+
+                    <tr>
+                        <td><%= (currentPage - 1) * 5 + index + 1 %></td>
+
+                        <td>
+                            <strong><%= book.title %></strong>
+                        </td>
+
+                        <td><%= book.author %></td>
+
+                        <td>
+                            <span class="genre-tag"><%= book.genre %></span>
+                        </td>
+
+                        <td><%= book.published_year %></td>
+
+                        <td>
+                            <span class="status <%= book.status === 'Available' ? 'available' : 'borrowed' %>">
+                                <%= book.status %>
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+
+                                <a
+                                    href="/books/edit/<%= book.id %>"
+                                    class="action-edit"
+                                >
+                                    Edit
+                                </a>
+
+                                <form
+                                    action="/books/delete/<%= book.id %>"
+                                    method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this book?');"
+                                >
+                                    <button type="submit" class="action-delete">
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                <% }) %>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <% if (totalPages > 1) { %>
+
+        <div class="pagination">
+
+            <% if (currentPage > 1) { %>
+                <a href="/books?page=<%= currentPage - 1 %>&search=<%= encodeURIComponent(search) %>&genre=<%= encodeURIComponent(genre) %>">
+                    Previous
+                </a>
+            <% } %>
+
+            <span>
+                Page <strong><%= currentPage %></strong> of <%= totalPages %>
+            </span>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="/books?page=<%= currentPage + 1 %>&search=<%= encodeURIComponent(search) %>&genre=<%= encodeURIComponent(genre) %>">
+                    Next
+                </a>
+            <% } %>
+
+        </div>
+
+    <% } %>
+
+</section>
+
+<%- include('../partials/footer') %>

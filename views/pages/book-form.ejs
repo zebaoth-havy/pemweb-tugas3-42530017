@@ -1,0 +1,141 @@
+<%- include('../partials/header') %>
+
+<section class="form-section">
+
+    <a href="/books" class="back-link">← Back to Collection</a>
+
+    <div class="form-heading">
+        <span class="eyebrow">THE LIBRARY ARCHIVE</span>
+
+        <h1><%= book ? 'Edit Book Details' : 'Add a New Book' %></h1>
+
+        <p>
+            <%= book
+                ? 'Update the information of your selected book.'
+                : 'Preserve a new story in our magical collection.'
+            %>
+        </p>
+    </div>
+
+    <form
+        action="<%= book ? '/books/edit/' + book.id : '/books/add' %>"
+        method="POST"
+        class="book-form"
+    >
+
+        <div class="form-group">
+            <label for="title">Book Title *</label>
+
+            <input
+                type="text"
+                id="title"
+                name="title"
+                value="<%= book ? book.title : '' %>"
+                placeholder="Enter book title"
+                maxlength="150"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="author">Author *</label>
+
+            <input
+                type="text"
+                id="author"
+                name="author"
+                value="<%= book ? book.author : '' %>"
+                placeholder="Enter author's name"
+                maxlength="100"
+                required
+            >
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="genre">Genre *</label>
+
+                <select id="genre" name="genre" required>
+                    <option value="">Select genre</option>
+
+                    <% ['Fantasy', 'Adventure', 'Mystery', 'Fiction', 'Romance'].forEach(item => { %>
+
+                        <option
+                            value="<%= item %>"
+                            <%= book && book.genre === item ? 'selected' : '' %>
+                        >
+                            <%= item %>
+                        </option>
+
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="published_year">Published Year *</label>
+
+                <input
+                    type="number"
+                    id="published_year"
+                    name="published_year"
+                    value="<%= book ? book.published_year : '' %>"
+                    min="1"
+                    max="<%= new Date().getFullYear() %>"
+                    placeholder="e.g. 1950"
+                    required
+                >
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+
+            <textarea
+                id="description"
+                name="description"
+                rows="4"
+                placeholder="Write a short description..."
+            ><%= book ? book.description : '' %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Availability Status *</label>
+
+            <select id="status" name="status" required>
+
+                <option
+                    value="Available"
+                    <%= !book || book.status === 'Available' ? 'selected' : '' %>
+                >
+                    Available
+                </option>
+
+                <option
+                    value="Borrowed"
+                    <%= book && book.status === 'Borrowed' ? 'selected' : '' %>
+                >
+                    Borrowed
+                </option>
+
+            </select>
+        </div>
+
+        <div class="form-actions">
+
+            <a href="/books" class="button button-outline">
+                Cancel
+            </a>
+
+            <button type="submit" class="button button-primary">
+                <%= book ? 'Save Changes' : 'Add Book' %>
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+<%- include('../partials/footer') %>
